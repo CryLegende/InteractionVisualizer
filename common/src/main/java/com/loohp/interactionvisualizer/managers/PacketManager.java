@@ -28,6 +28,7 @@ import com.loohp.interactionvisualizer.entityholders.Item;
 import com.loohp.interactionvisualizer.entityholders.ItemFrame;
 import com.loohp.interactionvisualizer.entityholders.VisualizerEntity;
 import com.loohp.interactionvisualizer.nms.NMS;
+import com.loohp.interactionvisualizer.skyhand.SentPositions;
 import com.loohp.interactionvisualizer.utils.LineOfSightUtils;
 import com.loohp.interactionvisualizer.utils.LocationUtils;
 import com.loohp.interactionvisualizer.utils.SyncUtils;
@@ -176,7 +177,7 @@ public class PacketManager implements Listener {
                     if (!location.getWorld().equals(entity.getWorld())) {
                         itr2.remove();
                     } else {
-                        NMS.getInstance().teleportEntity(player, entity.getEntityId(), entity.getViewingLocation(location, location.getDirection()));
+                        SentPositions.teleportEntity(NMS.getInstance(), player, entity.getEntityId(), entity.getViewingLocation(location, location.getDirection()));
                     }
                 }
             }
@@ -278,7 +279,7 @@ public class PacketManager implements Listener {
         }
         InteractionVisualizer.asyncExecutorManager.runTaskAsynchronously(() -> {
             Collection<Player> playersInRange = PlayerLocationManager.filterOutOfRange(players, entity);
-            NMS.getInstance().spawnArmorStand(playersInRange, entity);
+            SentPositions.spawnArmorStand(NMS.getInstance(), playersInRange, entity);
             playersInRange.forEach((each) -> {
                 Set<VisualizerEntity> list = playerStatus.get(each);
                 if (list != null) {
@@ -327,7 +328,7 @@ public class PacketManager implements Listener {
         }
         InteractionVisualizer.asyncExecutorManager.runTaskAsynchronously(() -> {
             Collection<Player> playersInRange = PlayerLocationManager.filterOutOfRange(players, entity);
-            NMS.getInstance().updateArmorStand(playersInRange, entity);
+            SentPositions.updateArmorStand(NMS.getInstance(), playersInRange, entity);
         });
 
         cache.put(entity, entity.cacheCode());
@@ -378,7 +379,7 @@ public class PacketManager implements Listener {
         }
         InteractionVisualizer.asyncExecutorManager.runTaskAsynchronously(() -> {
             Collection<Player> playersInRange = bypassFilter ? players : PlayerLocationManager.filterOutOfRange(players, entity);
-            NMS.getInstance().removeArmorStand(playersInRange, entity);
+            SentPositions.removeArmorStand(NMS.getInstance(), playersInRange, entity);
             playersInRange.forEach((each) -> {
                 Set<VisualizerEntity> list = playerStatus.get(each);
                 if (list != null) {
